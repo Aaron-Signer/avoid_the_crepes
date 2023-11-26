@@ -1,0 +1,61 @@
+[gd_scene load_steps=9 format=3 uid="uid://cc2mrwmhhn5n4"]
+
+[ext_resource type="Script" path="res://main/main.gd" id="1_2q0qe"]
+[ext_resource type="PackedScene" uid="uid://cbjpealcbh6b2" path="res://player/player.tscn" id="1_bqauy"]
+[ext_resource type="PackedScene" uid="uid://dwqgkhedte5i" path="res://enemy/mob.tscn" id="2_rbm4n"]
+[ext_resource type="PackedScene" uid="uid://d1h8f5u5b3s35" path="res://hud/hud.tscn" id="3_neepj"]
+[ext_resource type="Texture2D" uid="uid://boamlpt7g8xqc" path="res://assets/art/universe-galaxy-space-atmosphere-preview.jpg" id="5_w0qsw"]
+[ext_resource type="AudioStream" uid="uid://bqeeuu1ooftfj" path="res://assets/art/gameover.wav" id="6_shl4m"]
+[ext_resource type="AudioStream" uid="uid://86x8mrcw44mf" path="res://assets/art/House In a Forest Loop.ogg" id="7_4rh86"]
+
+[sub_resource type="Curve2D" id="Curve2D_5j2ra"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 480, 0, 0, 0, 0, 0, 480, 720, 0, 0, 0, 0, 0, 720, 0, 0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[node name="Main" type="Node"]
+script = ExtResource("1_2q0qe")
+mob_scene = ExtResource("2_rbm4n")
+
+[node name="Hud" parent="." instance=ExtResource("3_neepj")]
+
+[node name="Player" parent="." instance=ExtResource("1_bqauy")]
+
+[node name="MobPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_5j2ra")
+
+[node name="MobSpawnerLocation" type="PathFollow2D" parent="MobPath"]
+
+[node name="MobTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="StartTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Marker2D" parent="."]
+position = Vector2(240, 450)
+
+[node name="Universe-galaxy-space-atmosphere-preview" type="Sprite2D" parent="."]
+position = Vector2(256, 360)
+
+[node name="Universe-galaxy-space-atmosphere-preview2" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(240, 360)
+rotation = 1.5708
+texture = ExtResource("5_w0qsw")
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_shl4m")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_4rh86")
+
+[connection signal="start_game" from="Hud" to="." method="start_game"]
+[connection signal="hit" from="Player" to="." method="game_over"]
+[connection signal="timeout" from="MobTimer" to="." method="_on_mob_timer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]
